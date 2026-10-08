@@ -1,16 +1,16 @@
 <launch>
   <!-- All-in-one: robot + joystick + trajectory executor (straight end effector). -->
   <arg name="robot_ip" default="172.16.0.2" />
-  <arg name="config" default="$(find arm_control_magnet_straight)/config.json" />
+  <arg name="config" default="$(find arm_control_magnet)/src/config_straight.json" />
   <arg name="mode" default="auto" />
   <!-- empty = config trajectory.execute_file -->
   <arg name="trajectory" default="" />
   <arg name="traj_arg" value="$(eval '--trajectory ' + arg('trajectory') if arg('trajectory') else '')" />
 
-  <include file="$(find arm_control_magnet_straight)/robot_bringup.launch">
+  <include file="$(find arm_control_magnet)/src/robot_bringup_straight.launch">
     <arg name="robot_ip" value="$(arg robot_ip)" />
   </include>
 
-  <node name="execute_magnet_path" pkg="arm_control_magnet_straight" type="execute_magnet_path.py"
+  <node name="execute_magnet_path_straight" pkg="arm_control_magnet" type="execute_magnet_path_straight.py"
         args="--config $(arg config) --mode $(arg mode) $(arg traj_arg)" output="screen" respawn="false" />
 </launch>

@@ -3,7 +3,7 @@ kinematics.py  –  Straight (coaxial) end-effector kinematics and pose helpers
 
 The straight end effector is mounted coaxially on panda_link8: the magnet tip
 lies on link8's +z axis, `length` metres from the flange
-(config.json -> end_effector.length_mm).  Tip and flange therefore share the
+(config_straight.json -> end_effector.length_mm).  Tip and flange therefore share the
 same orientation.
 
 All Euler angles use the 'rxyz' (rotating-frame X-Y-Z) convention used

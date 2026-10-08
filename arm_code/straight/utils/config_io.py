@@ -1,4 +1,4 @@
-"""Load config.json and resolve file paths relative to it."""
+"""Load config_straight.json and resolve file paths relative to it."""
 
 import json
 import os

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-execute_magnet_path.py  –  Execute a magnet trajectory, Franka FR3 + STRAIGHT magnet end effector
+execute_magnet_path_straight.py  –  Execute a magnet trajectory, Franka FR3 + STRAIGHT magnet end effector
 
 Straight-end-effector version of arm_code/new/execute_magnet_path.py.
 Loads a 6xN (x, y, z, alpha, phi, yaw) or 5xN trajectory of offsets relative to
@@ -13,7 +13,7 @@ Modes:  auto      run all waypoints with --delay seconds between them (default)
         joystick  press B on the joystick before each waypoint
 
 Usage (full instructions: GUIDE.md at the repository root):
-  rosrun arm_control_magnet_straight execute_magnet_path.py [--trajectory FILE] [--mode auto] [--motor]
+  rosrun arm_control_magnet execute_magnet_path_straight.py [--trajectory FILE] [--mode auto] [--motor]
 """
 
 import sys
@@ -57,7 +57,7 @@ class TrajectoryExecutor:
         print(f"Loaded trajectory: {traj_file} ({self.traj.shape[0]} waypoints)")
 
         # --- ROS / MoveIt ---
-        rospy.init_node('trajectory_executor', anonymous=True)
+        rospy.init_node('execute_magnet_path_straight', anonymous=True)
         moveit_commander.roscpp_initialize(sys.argv)
         self.robot = moveit_commander.RobotCommander()
         self.scene = moveit_commander.PlanningSceneInterface()
@@ -69,7 +69,7 @@ class TrajectoryExecutor:
         print(f"Tool          : straight, {cfg['end_effector']['length_mm']:.1f} mm")
 
         # --- live state stream for the recording PC ---
-        self.state_pub = ArmStatePublisher(cfg, source='execute_magnet_path')
+        self.state_pub = ArmStatePublisher(cfg, source='execute_magnet_path_straight')
         self.state_pub.set_mode('init')
 
         # --- motor (optional; starts rotating when the trajectory starts) ---
@@ -232,7 +232,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="Execute a magnet trajectory with the STRAIGHT end effector. See GUIDE.md.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--config', type=str, default=os.path.join(here, 'config.json'),
+    parser.add_argument('--config', type=str, default=os.path.join(here, 'config_straight.json'),
                         help='JSON configuration file')
     parser.add_argument('--trajectory', type=str, default=None,
                         help='Trajectory .txt (5xN or 6xN); default: config trajectory.execute_file')

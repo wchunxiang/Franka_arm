@@ -13,7 +13,7 @@ Arm PC: controller / path executor --(/arm_state, 30 Hz, std_msgs/String JSON)--
 Epiphan grabber -----------------------------------------------------------------> |-> <stamp>.csv  (1 row per frame)
 ```
 
-- `arm_code/straight/` is for the **straight (coaxial) end effector**. It is a self-contained catkin package `arm_control_magnet_straight`.
+- `arm_code/straight/` is for the **straight (coaxial) end effector**. Its files go into the existing ROS package `arm_control_magnet` and all end in `_straight`, so they never clash with the L-shape files.
 - `arm_code/new` (L-shape) and `arm_code/old` are unchanged.
 
 ## 2. One-time setup
@@ -28,22 +28,28 @@ export ROS_IP=134.105.56.32          # no spaces around '='
 pip3 install opencv-python imageio imageio-ffmpeg     # + ROS Noetic (ros-noetic-ros-base)
 ```
 
-**Arm PC `~/.bashrc`:**
+**Arm PC (Ubuntu 20.04, ROS Noetic, Python 3.8) `~/.bashrc`:**
 ```bash
 export ROS_MASTER_URI=http://134.105.56.32:11311/
 export ROS_HOSTNAME=134.105.57.59
 export ROS_IP=134.105.57.59
 ```
+Copy the straight files into the existing package (`cp -n` never overwrites your utils). No `catkin_make` is needed:
 ```bash
-cd ~/catkin_ws/src && ln -s <repo>/arm_code/straight arm_control_magnet_straight
-cd ~/catkin_ws && catkin_make && source devel/setup.bash
+cd <repo>/arm_code/straight
+PKG=~/catkin_ws/src/arm_control_magnet/src
+cp *_straight.py config_straight.json *_straight.launch $PKG/
+cp -n utils/*.py $PKG/utils/
+cp path_random/generate_magnet_path_straight.py $PKG/path_random/
+chmod +x $PKG/*_straight.py
 ```
+Re-run these commands after every update from the repository. Edit the copied `$PKG/config_straight.json`.
 
 **Network check.** Each PC must `ping` the other. If a firewall is on, allow all traffic from the other PC's IP, because ROS uses random ports.
 
 ## 3. Configure (edit the JSON, no code changes)
 
-**Arm PC: `arm_code/straight/config.json`**
+**Arm PC: `config_straight.json`**
 
 | Field | Meaning | Default |
 |---|---|---|
@@ -53,7 +59,7 @@ cd ~/catkin_ws && catkin_make && source devel/setup.bash
 | `motor.enable` | `false`: LB+X/B/Y/A rotate yaw. `true`: those keys drive the magnet motor | `false` |
 | `state_publisher.reach_tol_mm / reach_tol_deg` | "reached" tolerance (green vs red) | `1` / `1` |
 | `trajectory.tracking_file` | trajectory for joystick tracking mode (Start button) | |
-| `trajectory.execute_file` | default trajectory for `execute_magnet_path.py` | |
+| `trajectory.execute_file` | default trajectory for `execute_magnet_path_straight.py` | |
 | `robot.vel_scale / acc_scale` | MoveIt speed and acceleration scaling | `0.12` / `0.03` |
 
 **Recording PC: `video_record/recorder_config.json`**
@@ -69,10 +75,10 @@ cd ~/catkin_ws && catkin_make && source devel/setup.bash
 
 1. **Recording PC:** `roscore`
 2. **Arm PC, Desk:** unlock the brakes. For `hand_guide`, move the arm by hand to the start pose now. Then **activate FCI**.
-3. **Arm PC, terminal 1:** `roslaunch arm_control_magnet_straight robot_bringup.launch robot_ip:=172.16.0.2`
+3. **Arm PC, terminal 1:** `roslaunch arm_control_magnet robot_bringup_straight.launch robot_ip:=172.16.0.2`
 4. **Arm PC, terminal 2:** pick one:
-   - Joystick control: `rosrun arm_control_magnet_straight franka_magnet_controller.py`
-   - Run a path: `rosrun arm_control_magnet_straight execute_magnet_path.py --mode auto --trajectory <file.txt>`
+   - Joystick control: `rosrun arm_control_magnet franka_magnet_controller_straight.py`
+   - Run a path: `rosrun arm_control_magnet execute_magnet_path_straight.py --mode auto --trajectory <file.txt>`
      - `--mode manual`: ENTER before each waypoint.
      - `--mode joystick`: B before each waypoint.
      - `--motor`: rotate the magnet during the path.
@@ -80,11 +86,11 @@ cd ~/catkin_ws && catkin_make && source devel/setup.bash
 6. **Arm PC, terminal 2:** press **ENTER** to capture the start pose (`fixed_pose`: the arm moves there by itself).
 7. **Recording PC:** press **`r`** to start recording, **`r`** again to stop, **`q`** to quit.
 
-> All-in-one alternative: `roslaunch arm_control_magnet_straight franka_magnet_controller.launch` or `execute_path.launch` (`mode:=… trajectory:=…`). Use it only if your roslaunch terminal accepts the ENTER key. Otherwise use steps 3–4.
+> All-in-one alternative: `roslaunch arm_control_magnet franka_magnet_controller_straight.launch` or `execute_path_straight.launch` (`mode:=… trajectory:=…`). Use it only if your roslaunch terminal accepts the ENTER key. Otherwise use steps 3–4.
 
-**New random paths** (no ROS needed): `python3 arm_code/straight/path_random/generate_magnet_path.py -o my_path --seed 1 [--optimise_yaw]`. This writes `my_path.txt` (6×N offsets) and `my_path_plot.png`.
+**New random paths** (no ROS needed): `python3 ~/catkin_ws/src/arm_control_magnet/src/path_random/generate_magnet_path_straight.py -o my_path --seed 1 [--optimise_yaw]`. This writes `my_path.txt` (6×N offsets) and `my_path_plot.png`.
 
-## 5. Joystick (`franka_magnet_controller.py`)
+## 5. Joystick (`franka_magnet_controller_straight.py`)
 
 Default steps: 2 mm / 50 mm and 2° / 5° (`step_sizes`). **Start** = tracking mode, **Back** = manual mode.
 
@@ -155,4 +161,4 @@ When there is no fresh arm data, `state = NO_DATA` and the arm columns are empty
 | `ROS master not reachable` | start `roscore` on the recording PC first |
 | Camera fails to open | wrong `camera.source`; try another `<videoN>` (`v4l2-ctl --list-devices`) |
 | Always red after a move | read the arm terminal (planning failed?); check `end_effector.length_mm` and `reach_tol_*` |
-| `NO_POSE` | tf `panda_link0 → panda_link8` missing: is `robot_bringup.launch` running? Do `robot.base_frame / flange_frame` match? |
+| `NO_POSE` | tf `panda_link0 → panda_link8` missing: is `robot_bringup_straight.launch` running? Do `robot.base_frame / flange_frame` match? |

@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-franka_magnet_controller.py  –  Joystick controller, Franka FR3 + STRAIGHT magnet end effector
+franka_magnet_controller_straight.py  –  Joystick controller, Franka FR3 + STRAIGHT magnet end effector
 
 Straight-end-effector version of arm_code/new/franka_magnet_controller.py:
   * magnet tip <-> panda_link8 with the coaxial model (utils/kinematics.py),
-    tool length = config.json -> end_effector.length_mm
-  * initial pose: config.json -> init.mode = "hand_guide" (default) | "fixed_pose"
+    tool length = config_straight.json -> end_effector.length_mm
+  * initial pose: config_straight.json -> init.mode = "hand_guide" (default) | "fixed_pose"
   * streams the live arm / tip state on /arm_state for the recording PC
   * motor disabled by default; then LB+X/B/Y/A rotate the yaw (3rd Euler angle)
 
 Usage (full instructions and the joystick map: GUIDE.md at the repository root):
-  rosrun arm_control_magnet_straight franka_magnet_controller.py [--config config.json]
+  rosrun arm_control_magnet franka_magnet_controller_straight.py [--config config_straight.json]
 """
 
 import sys
@@ -66,7 +66,7 @@ class FrankaMagnetController:
         self.b_show_text = disp_cfg.get("show_text", False) and HAS_CV2
 
         # ---- ROS / MoveIt ----
-        rospy.init_node('franka_magnet_controller', anonymous=True)
+        rospy.init_node('franka_magnet_controller_straight', anonymous=True)
         moveit_commander.roscpp_initialize(sys.argv)
         self.robot = moveit_commander.RobotCommander()
         self.scene = moveit_commander.PlanningSceneInterface()
@@ -78,7 +78,7 @@ class FrankaMagnetController:
         print(f"Tool           : straight, {cfg['end_effector']['length_mm']:.1f} mm")
 
         # ---- live state stream for the recording PC (starts immediately) ----
-        self.state_pub = ArmStatePublisher(cfg, source='franka_magnet_controller')
+        self.state_pub = ArmStatePublisher(cfg, source='franka_magnet_controller_straight')
         self.state_pub.set_mode('init')
 
         # ---- motor (optional) ----
@@ -403,7 +403,7 @@ class FrankaMagnetController:
             self.show.draw(vals, color=(0, 255, 0) if self.b_run else (255, 255, 255))
 
     def _shutdown(self):
-        print("Shutting down franka_magnet_controller ...")
+        print("Shutting down franka_magnet_controller_straight ...")
         if self.b_motor_enable:
             try:
                 self.stepper.servo_stop()
@@ -420,7 +420,7 @@ def main():
     here = os.path.dirname(os.path.abspath(__file__))
     parser = argparse.ArgumentParser(
         description="Joystick controller for the Franka FR3 with the STRAIGHT magnet end effector. See GUIDE.md.")
-    parser.add_argument('--config', type=str, default=os.path.join(here, 'config.json'),
+    parser.add_argument('--config', type=str, default=os.path.join(here, 'config_straight.json'),
                         help='JSON configuration file')
     args = parser.parse_args(rospy.myargv()[1:])
 

@@ -65,7 +65,7 @@
     },
 
     "trajectory": {
-        "__comment__": "tracking_file: used by franka_magnet_controller.py (Start button). execute_file: default for execute_magnet_path.py.",
+        "__comment__": "tracking_file: used by franka_magnet_controller_straight.py (Start button). execute_file: default for execute_magnet_path_straight.py.",
         "tracking_file": "/home/roboticarm/catkin_ws/src/arm_control_magnet/src/Path/model_big_v4_forward/lr4_mag_reverse.txt",
         "tracking_mag_height_init_mm": 80,
         "execute_file": "/home/roboticarm/catkin_ws/src/arm_control_magnet/src/path_random/magnet_path_tiny.txt"

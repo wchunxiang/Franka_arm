@@ -1,7 +1,7 @@
 """
 init_pose.py  –  Initial magnet-tip pose for the straight end effector
 
-config.json -> init.mode:
+config_straight.json -> init.mode:
   "hand_guide"  (default) the arm is moved by hand (Desk, brakes open), the user
                 presses ENTER and the current pose becomes the initial pose.
   "fixed_pose"  the arm goes to init.joints_init, then the magnet tip is moved

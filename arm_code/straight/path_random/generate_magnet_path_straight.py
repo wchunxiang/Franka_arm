@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-generate_magnet_path.py  –  Generate smooth random closed-loop paths for the STRAIGHT magnet end-effector
+generate_magnet_path_straight.py  –  Generate smooth random closed-loop paths for the STRAIGHT magnet end-effector
 
 Straight-end-effector version of arm_code/new/path_random/generate_magnet_path.py:
 the yaw optimisation uses the coaxial tool model (tip on the link8 z-axis).
 The tool length, base pose (init.fixed_tip_pose) and IK seed (init.joints_init)
-are read from ../config.json (--config); CLI flags override them.
+are read from ../config_straight.json (--config); CLI flags override them.
 
 Creates a 6×N trajectory file (x, y, z, alpha, phi, yaw) of relative offsets that:
   1. Starts and ends at (0,0,0,0,0,0) — the current magnet position.
@@ -21,9 +21,9 @@ Output:
   <output_base>_plot.png     – (optional) 3D visualisation with direction arrows
 
 Usage (see also GUIDE.md):
-  python3 generate_magnet_path.py --help
-  python3 generate_magnet_path.py -o my_path --seed 42
-  python3 generate_magnet_path.py -o my_path --length 0.5 --n_harmonics 7 --optimise_yaw
+  python3 generate_magnet_path_straight.py --help
+  python3 generate_magnet_path_straight.py -o my_path --seed 42
+  python3 generate_magnet_path_straight.py -o my_path --length 0.5 --n_harmonics 7 --optimise_yaw
 
 Author: (generated with assistance from Claude)
 """
@@ -602,10 +602,10 @@ def main():
     parser.add_argument('--n_harmonics', type=int, default=5,
                         help='Number of Fourier harmonics per channel (more = more complex path)')
 
-    # Manipulability / IK  (defaults come from the straight config.json)
+    # Manipulability / IK  (defaults come from config_straight.json)
     parser.add_argument('--config', type=str,
-                        default=os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'config.json'),
-                        help='Straight-EE config.json (tool length, base pose, IK seed)')
+                        default=os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'config_straight.json'),
+                        help='Straight-EE config_straight.json (tool length, base pose, IK seed)')
     parser.add_argument('--base_pose', type=float, nargs=6, default=None,
                         help='Absolute magnet-tip base pose [x,y,z,roll,pitch,yaw] (m,rad); '
                              'default: config init.fixed_tip_pose')
@@ -628,7 +628,7 @@ def main():
 
     args = parser.parse_args()
 
-    # Fill IK defaults from the straight config.json
+    # Fill IK defaults from config_straight.json
     cfg = {}
     if os.path.isfile(args.config):
         with open(args.config, 'r') as f:
