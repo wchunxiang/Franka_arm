@@ -1,0 +1,12 @@
+<launch>
+  <!-- All-in-one: robot + joystick + joystick controller (straight end effector). -->
+  <arg name="robot_ip" default="172.16.0.2" />
+  <arg name="config" default="$(find arm_control_magnet)/src/config_straight.json" />
+
+  <include file="$(find arm_control_magnet)/src/robot_bringup_straight.launch">
+    <arg name="robot_ip" value="$(arg robot_ip)" />
+  </include>
+
+  <node name="franka_magnet_controller_straight" pkg="arm_control_magnet" type="franka_magnet_controller_straight.py"
+        args="--config $(arg config)" output="screen" respawn="false" />
+</launch>
