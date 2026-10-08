@@ -1,0 +1,34 @@
+{
+    "__comment__": "Config for arm_video_recorder.py (recording PC). Relative paths are relative to this file. See GUIDE.md.",
+    "camera": {
+        "__comment__": "backend imageio: source like '<video4>' (as in record.py) | backend opencv: device index (e.g. 4) or a video file",
+        "backend": "imageio",
+        "source": "<video4>"
+    },
+    "fps": 20,
+    "fourcc": "XVID",
+    "output_folder": "../../data_fluoro/",
+    "window_name": "Arm video recorder",
+    "ros": {
+        "topic": "/arm_state",
+        "stale_s": 0.5
+    },
+    "overlay": {
+        "__comment__": "anchor: top_right | top_left | bottom_left | bottom_right; offset_px = [x, y] inwards from that corner. Keys i/j/k/l move it, s saves it here.",
+        "anchor": "top_right",
+        "offset_px": [20, 20],
+        "step_px": 5,
+        "big_step_px": 40,
+        "font_scale": 0.6,
+        "thickness": 1,
+        "bg_alpha": 0.5,
+        "colors_bgr": {
+            "MOVING": [0, 255, 255],
+            "REACHED": [0, 255, 0],
+            "NOT_REACHED": [0, 0, 255],
+            "IDLE": [255, 255, 255],
+            "NO_POSE": [160, 160, 160],
+            "NO_DATA": [160, 160, 160]
+        }
+    }
+}

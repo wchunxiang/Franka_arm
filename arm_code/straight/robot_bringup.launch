@@ -1,0 +1,16 @@
+<launch>
+  <!-- Robot (franka_control + MoveIt) and joystick only.
+       Start the controller / path executor afterwards with rosrun (they wait for ENTER). -->
+  <arg name="robot_ip" default="172.16.0.2" />
+  <arg name="joy_dev" default="/dev/input/js0" />
+
+  <node respawn="true" pkg="joy" type="joy_node" name="tele_joy">
+    <param name="dev" type="string" value="$(arg joy_dev)" />
+    <param name="deadzone" value="0.12" />
+  </node>
+
+  <include file="$(find panda_moveit_config)/launch/franka_control.launch">
+    <arg name="robot_ip" value="$(arg robot_ip)" />
+    <arg name="load_gripper" value="false" />
+  </include>
+</launch>

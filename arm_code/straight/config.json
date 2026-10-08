@@ -1,0 +1,86 @@
+{
+    "__comment__": "Franka FR3 + STRAIGHT (coaxial) magnet end effector. See GUIDE.md at the repository root. Relative file paths are relative to this file.",
+
+    "robot": {
+        "group_name": "panda_arm",
+        "base_frame": "panda_link0",
+        "flange_frame": "panda_link8",
+        "joint_states_topic": "/joint_states",
+        "vel_scale": 0.12,
+        "acc_scale": 0.03,
+        "arm_acc": 1e-4,
+        "singularity_thresholds": [1.2, 2.5, 3.5, 4.3],
+        "planning_repeat": [3, 5, 5, 2]
+    },
+
+    "end_effector": {
+        "__comment__": "Magnet tip on the panda_link8 z-axis, length_mm from the flange.",
+        "type": "straight",
+        "length_mm": 140.0
+    },
+
+    "init": {
+        "__comment__": "mode: hand_guide = move the arm by hand, press ENTER | fixed_pose = go to joints_init, then move the tip to fixed_tip_pose",
+        "mode": "hand_guide",
+        "joints_init": [-0.0659491400771005, 0.3258821602345, 0.05019939570510706,
+                        -2.0891858852620175, 1.5067939636488183, 1.5371167519861653,
+                        -0.8406383118695672],
+        "fixed_tip_pose": {
+            "x_m": 0.543,
+            "y_m": 0.24,
+            "z_m": 0.31,
+            "roll_deg": -90.0,
+            "pitch_deg": 0.0,
+            "yaw_deg": 0.0
+        }
+    },
+
+    "step_sizes": {
+        "x": {"small_m": 2e-3, "big_m": 50e-3},
+        "y": {"small_m": 2e-3, "big_m": 50e-3},
+        "z": {"small_m": 2e-3, "big_m": 50e-3},
+        "roll":  {"small_rad": 0.0349, "big_rad": 0.0873},
+        "pitch": {"small_rad": 0.0349, "big_rad": 0.0873},
+        "yaw":   {"small_rad": 0.0349, "big_rad": 0.0873}
+    },
+
+    "joystick": {
+        "button_X": 0,
+        "button_A": 1,
+        "button_B": 2,
+        "button_Y": 3,
+        "button_LB": 4,
+        "button_RB": 5,
+        "button_start": -3,
+        "button_back": -4,
+        "axis_dpad_up_down": -1,
+        "axis_dpad_left_right": -2
+    },
+
+    "motor": {
+        "__comment__": "enable=false: LB+X/B/Y/A rotate yaw. enable=true: LB+X/B/Y/A control the magnet motor.",
+        "enable": false,
+        "serial_no": "/dev/ttyACM0",
+        "step_rotation": 320
+    },
+
+    "trajectory": {
+        "__comment__": "tracking_file: used by franka_magnet_controller.py (Start button). execute_file: default for execute_magnet_path.py.",
+        "tracking_file": "/home/roboticarm/catkin_ws/src/arm_control_magnet/src/Path/model_big_v4_forward/lr4_mag_reverse.txt",
+        "tracking_mag_height_init_mm": 80,
+        "execute_file": "/home/roboticarm/catkin_ws/src/arm_control_magnet/src/path_random/magnet_path_tiny.txt"
+    },
+
+    "display": {
+        "__comment__": "Optional small 'Command' text window on the arm PC (the recording PC shows the full overlay).",
+        "show_text": false,
+        "robot_xyz_init_mm": [0, 0, 180]
+    },
+
+    "state_publisher": {
+        "topic": "/arm_state",
+        "rate_hz": 30,
+        "reach_tol_mm": 1.0,
+        "reach_tol_deg": 1.0
+    }
+}
