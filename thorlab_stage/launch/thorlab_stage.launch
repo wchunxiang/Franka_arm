@@ -1,0 +1,12 @@
+<launch>
+
+  <node name="thorlab_stage" pkg="thorlab_stage" type="thorlab_stage.py" output="screen" respawn="false" />
+
+   <!-- joy node -->
+  <node respawn="true" pkg="joy" type="joy_node" name="tele_joy" >
+    	<param name="dev" type="string" value="/dev/input/js0" />
+    	<param name="deadzone" value="0.12" />
+	</node>    
+    
+
+</launch>
