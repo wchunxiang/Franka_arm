@@ -1,0 +1,1 @@
+rosrun arm_control_magnet execute_magnet_path.py --config /home/roboticarm/catkin_ws/src/arm_control_magnet/src/config.json  --trajectory /home/roboticarm/catkin_ws/src/arm_control_magnet/src/path_random/magnet_path.txt --mode auto

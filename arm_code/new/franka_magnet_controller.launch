@@ -1,0 +1,16 @@
+<launch>
+
+  <node name="franka_magnet_controller" pkg="arm_control_magnet" type="franka_magnet_controller.py" output="screen" respawn="false" />
+
+   <!-- joy node -->
+  <node respawn="true" pkg="joy" type="joy_node" name="tele_joy" >
+    	<param name="dev" type="string" value="/dev/input/js0" />
+    	<param name="deadzone" value="0.12" />
+	</node>    
+    
+  <arg name="robot_ip" value="172.16.0.2" />
+
+  <include file="$(find panda_moveit_config)/launch/franka_control.launch">
+    <arg name="load_gripper" value="false" />
+  </include>
+</launch>

@@ -1,0 +1,67 @@
+{
+    "__comment__": "Configuration for Franka Emika FR3 magnet arm controller",
+
+    "robot": {
+        "group_name": "panda_arm",
+        "use_joints_init": false,
+        "joints_init": [0.2474237375159186, -0.1570441318203515, -0.26607729639399247,
+                        -2.231042875659896, -0.045580390370040795, 2.0751396187789664,
+                        0.006726253940573953],
+        "joints_reset": [0.2474237375159186, -0.1570441318203515, -0.26607729639399247,
+                         -2.231042875659896, -0.045580390370040795, 2.0751396187789664,
+                         0.006726253940573953],
+        "vel_scale": 0.1,
+        "acc_scale": 0.03,
+        "arm_acc": 1e-4,
+        "singularity_thresholds": [1.2, 2.5, 3.5, 4.3],
+        "planning_repeat": [3, 5, 5, 2]
+    },
+
+    "end_effector": {
+        "magnet_key": "30",
+        "magnet_settings": {
+            "40": {"end_effector_length_mm": 49, "vel": 0.16, "acc": 0.02},
+            "50": {"end_effector_length_mm": 54, "vel": 0.08, "acc": 0.01},
+            "30": {"end_effector_length_mm": 225, "vel": 0.12, "acc": 0.03}
+        },
+        "end_effector_height_mm": 71.65
+    },
+
+    "init_pose": {
+        "__comment__": "Only used when use_joints_init is true (fallback mode). In hand-guide mode these are ignored.",
+        "x_m": 0.497,
+        "y_m": -0.239,
+        "z_m": 0.365,
+        "roll_rad": -3.141592653589793,
+        "pitch_rad": 0.0,
+        "yaw_rad": 0.0
+    },
+
+    "step_sizes": {
+        "x": {"small_m": 2e-3, "big_m": 50e-3},
+        "y": {"small_m": 2e-3, "big_m": 50e-3},
+        "z": {"small_m": 2e-3, "big_m": 50e-3},
+        "roll":  {"small_rad": 0.0349, "big_rad": 0.0873},
+        "pitch": {"small_rad": 0.0349, "big_rad": 0.0873},
+        "yaw":   {"small_rad": 0.0349, "big_rad": 0.0873}
+    },
+
+    "motor": {
+        "enable": true,
+        "serial_no": "/dev/ttyACM0",
+        "step_rotation": 320
+    },
+
+    "trajectory": {
+        "file_path": "/home/roboticarm/catkin_ws/src/arm_control_magnet/src/Path/model_big_v4_forward/lr4_mag_reverse.txt",
+        "mag_height_init_mm": 80
+    },
+
+    "display": {
+        "show_text": true,
+        "robot_xyz_init_mm": [0, 0, 180]
+    },
+
+    "use_path_constraints": false,
+    "debug_mode": false
+}
